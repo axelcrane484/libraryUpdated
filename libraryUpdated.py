@@ -1,4 +1,4 @@
-# library
+ # library
  # multiple books that you can choose from
  # name of book with prices
  #button buy now
@@ -18,6 +18,7 @@ Lord_of_the_Rings = 7
 Harry_potter = 6
 Fallen_Kingdom = 5
 budget = 15
+cart = []
 
 books = {"Lord of the Rings" : {'price' : 7, 'author' : 'John Ronald', 'year' : 1942 }, "Harry Potter" :  {'price' : 6, 'author' : 'J.K. Rowling', 'year' : 1997 }, "Fallen Kingdom" :  {'price' : 5, 'author' : 'Elizabeth May', 'year' : 2000 }}
 
@@ -33,6 +34,45 @@ details = widgets.Textarea(
     disabled = True,
     layout = widgets.Layout(width = "50%", height = "100px"),
 )
+
+def add_cart(b):
+  selected_book = book_widget.value
+  if selected_book not in cart:
+    cart.append(selected_book)
+    display(update_cart_display)
+  else:
+    print(selected_book,"already in cart")
+  
+  
+def update_cart_display():
+  if cart:
+    cart_details = "\n".join([f"{book} - ${books[book]['price']}" for book in cart])
+    cart_display.value = cart_details
+  else:
+    cart_display.value = "cart is empty"
+
+
+
+cart_display = widgets.Textarea(
+    value = "cart is empty",
+    description = "cart",
+    disabled = False,
+    layout = widgets.Layout(width = "50%", height = "100px")
+)  
+
+add_to_cart = widgets.Button(
+    description = "add to cart",
+    disabled = False,
+)
+
+buy_cart = widgets.Button(
+    description = "buy cart",
+    disabled = False,
+)
+
+add_to_cart.observe(add_cart, names = "value")
+
+add_to_cart.on_click(add_cart)
 
 def deposit_money(b):
   global budget
@@ -107,4 +147,7 @@ display(book_widget)
 display(details)
 display(deposit_widget)
 display(deposit_button)
+display(add_to_cart)
+display(cart_display)
+display(buy_cart)
 display(buy_now)
