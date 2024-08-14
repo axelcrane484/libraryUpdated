@@ -39,11 +39,10 @@ def add_cart(b):
   selected_book = book_widget.value
   if selected_book not in cart:
     cart.append(selected_book)
-    display(update_cart_display)
+    update_cart_display()
   else:
     print(selected_book,"already in cart")
-  
-  
+
 def update_cart_display():
   if cart:
     cart_details = "\n".join([f"{book} - ${books[book]['price']}" for book in cart])
@@ -57,15 +56,19 @@ cart_display = widgets.Textarea(
     value = "cart is empty",
     description = "cart",
     disabled = False,
-    layout = widgets.Layout(width = "50%", height = "100px")
-)  
+    layout = widgets.Layout(width = "50%", height = "100px"),
+)
 
 add_to_cart = widgets.Button(
+    button_style = "success",
+    tooltip = "Add your book to cart",
     description = "add to cart",
     disabled = False,
 )
 
 buy_cart = widgets.Button(
+    button_style = "success",
+    tooltip = "buy the books inside your cart",
     description = "buy cart",
     disabled = False,
 )
@@ -85,6 +88,8 @@ def deposit_money(b):
 
 
 deposit_button = widgets.Button(
+    button_style = "info",
+    tooltip = "deposit more money into your budget",
     description = "deposit money",
     disabled = False,
 )
@@ -107,17 +112,21 @@ def update_details(change):
 book_widget.observe(update_details, names = 'value')
 
 def buy(b):
-  global budget
+  global budget, cart
   selected_book = book_widget.value
-  price = books[selected_book]['price']
+  price = sum(books[book]['price'] for book in cart)
   if price <= budget:
-    print("you have bought", selected_book)
+    print(f"you have bought{' '.join(cart)}")
     budget -= price
     print("you have £",budget,"left")
+    cart.clear()
+    update_cart_display()
   else:
     print("you do not have any money")
 
 buy_now = widgets.Button(
+    button_style = "success",
+    tooltip = "buy your books",
     description = 'buy now',
     disabled = False,
 )
@@ -149,5 +158,4 @@ display(deposit_widget)
 display(deposit_button)
 display(add_to_cart)
 display(cart_display)
-display(buy_cart)
 display(buy_now)
